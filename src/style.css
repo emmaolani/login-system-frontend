@@ -1,0 +1,170 @@
+:root{
+    font-size: 0.625rem;
+}
+
+body{
+    margin: 0px;
+    padding: 0px;
+    font-family: sans-serif;
+    overflow-x: hidden;
+}
+
+nav{
+    padding: 0.625em 1.25em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    background-color: #2525e0;
+}
+
+.logo{
+    color: white;
+    font-weight: 200;
+    font-size: 1.8rem;
+}
+
+.nav-btn-cont{
+    display: flex;
+    font-size: 1.2rem;
+    gap: 0.3125em;
+}
+
+.nav-btn{
+    padding: 0.67em;
+    border: 0px;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.hero-cont{
+    width: 100%;
+    height: 450px;
+}
+.hero_track-slider {
+    position: relative;
+    background-color: grey;
+    width: 100%;
+    height: 450px;
+    overflow-x: scroll;
+    transform: translateX(10%);
+}
+
+.slider{
+    position: absolute;
+    width: 100%;
+    height: 90%;
+}
+.hero-img1, .hero-img2, .hero-img3, .hero-img4{
+    width: 100%;
+    height: 400px;
+
+}
+
+.c1 {
+    transform: translateX(100%);
+}
+
+.c2 {
+    transform: translateX(200%);
+}
+
+.c3 {
+    transform: translateX(300%);
+}
+
+
+/* ******************login and sign-up page**************** */
+#auth-page {
+    background-image:url('./pexels-karolina-grabowska-5650043.jpg');
+    width: 100vw;
+    height: 91.6vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#Auth-sect{
+    background-color: white;
+    width: 30vw;
+    padding: 2em; 
+}
+
+.auth-sect1{
+    font-size: 2.5rem;
+    color: rgb(68, 67, 67);
+    font-weight: 700;
+    margin: 0.5em 0em;
+}
+
+.auth-sect2{
+    font-size: 1.2rem;
+    color: rgb(68, 67, 67);
+    margin: 0.83em 0em;
+}
+
+.auth-desc{
+    width: 99%;
+    background-color: antiquewhite;
+    font-size: 1.2rem;
+    padding: 0.41em 0.41em;
+    font-weight: 400;
+    margin: 0.41em 0em;
+    color: rgb(68, 67, 67);
+    cursor: pointer;    
+}
+
+.auth-inp-cont{
+    display: flex;
+    flex-direction: column; 
+    gap: 2em;
+    margin: 4em 0em;
+}
+
+.auth-inp{
+    padding: 0.5em;
+    width: 70%;
+    border: none;
+    background-color: rgb(231, 231, 231);
+    color: grey;
+}
+.error{
+    padding: 0.5em;
+    width: 70%;
+    border: 4px 4px;
+    border-color: red;
+    background-color: rgb(231, 231, 231);
+    color: grey;
+}
+
+.fwd-bwd{
+    margin: 10em 0em 2em 0em;
+    display: flex;
+    gap: 1em;
+}
+.auth-bwd-btn{
+    font-size: 1.5em;
+    padding: 0.5em 1em;
+    background-color: rgb(65, 252, 65);
+    color: white;
+    border: none;
+}
+
+.auth-fwd-btn{
+    font-size: 1.5em;
+    padding: 0.5em 1em;
+    background-color: #4646e2;
+    color: white;
+    border: none;
+}
+
+.hide{
+    display: none;
+}
+.status{
+    color: green;
+    font-size: 1.6em;
+}
