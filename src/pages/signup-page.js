@@ -3,14 +3,23 @@ import { useNavigate } from "react-router-dom"
 import useAuthuser from "../hooks/useAuthuser"
 
 export default function SignupPage(){
-    const [user, setuser] = useState({email:"", password:"", conpassword: ""})
+    // this state stores input field data
+    const [user, setuser] = useState({
+        email:"", firstname:"", middlename:"", lastname:"", password:"", conpassword: ""
+    })
+    // This state check if password and pasword confirmation is correct, True it is a match and 
+    // false means it's not a match lastly null indicates password confirmation is empty
     const [pass_match, set_pass_match] = useState(null)
+    // a custom hooks that sends request to the server to log users in
     const [response, setresponse] = useAuthuser()
     const redirect = useNavigate()
     
-    let classname = ""
-    let showstatus = ""
+    // we use this variable to manipulate the styling of confirm password input field
+    let con_classname = "auth-inp"
+    // the variable is the classname of the sign-up button depending on the status of the response it is 
+    // either hidden shown
     let showbtn = ""
+    // after user logs in we input the status of the response in this variable
     let statusmessage = ""
 
     function updateuser(e) {
@@ -31,6 +40,7 @@ export default function SignupPage(){
                 set_pass_match(null)
             }else if (user.password === "" && e.target.value !== ""){
                 set_pass_match(false)
+                
             }else if (user.password !== e.target.value ){
                 set_pass_match(false)
             }
@@ -49,32 +59,28 @@ export default function SignupPage(){
     }
 
     if (response.status === null) {
-        showstatus = "hide"
         statusmessage = ""
         showbtn = "fwd-bwd"
     }else if (response.status === 201) {
-        showstatus = "status"
         statusmessage = response.message
         showbtn = "hide"
         setTimeout(() => {
             redirect("/auth/login")
         }, 2000);
     }else if (response.status === 409) {
-        showstatus = "status"
         statusmessage = response.message
         showbtn = "fwd-bwd"
     }else if (response.status === 500) {
-        showstatus = "status"
         statusmessage = response.message
         showbtn = "fwd-bwd"
     }
 
 
     if (pass_match === true || pass_match === null) {
-        classname = "auth-inp"
+        con_classname = "auth-inp"
         console.log(pass_match)
     }else{
-        classname = "error"
+        con_classname = "error"
         console.log(pass_match)
     }
 
@@ -92,6 +98,27 @@ export default function SignupPage(){
                         name="email"
                         className="auth-inp"
                     />
+                     <input
+                        type="firstname"
+                        placeholder="firstname"
+                        onChange={updateuser}
+                        name="firstname"
+                        className="auth-inp"
+                    />
+                    <input
+                        type="middlename"
+                        placeholder="middlename"
+                        onChange={updateuser}
+                        name="middlename"
+                        className="auth-inp"
+                    />
+                    <input
+                        type="lastname"
+                        placeholder="lastname"
+                        onChange={updateuser}
+                        name="lastname"
+                        className="auth-inp"
+                    />
                     <input
                         type="password"
                         placeholder="password"
@@ -104,16 +131,16 @@ export default function SignupPage(){
                         placeholder="confirm password"
                         onChange={updateuser}
                         name="conpassword"
-                        className={ classname }
+                        className={con_classname}
                     />
                 </div>
-                <div className={showstatus}>
+                <div>
                     <p>{statusmessage}</p>
                 </div>
 
                 <div className={showbtn}>
                     <button className="auth-bwd-btn">Back</button>
-                    <button className="auth-fwd-btn" onClick={()=>{setresponse({email: user.email, password: user.password}, 'POST', 201, 'http://localhost:80/sign-up')}}>Create</button>
+                    <button className="auth-fwd-btn" onClick={()=>{setresponse(user, 'POST', 201, 'http://localhost:80/sign-up')}}>Create</button>
                 </div>
             </div>
         </section>

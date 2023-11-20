@@ -43,45 +43,55 @@ nav{
 .hero-cont{
     width: 100%;
     height: 450px;
-}
-.hero_track-slider {
     position: relative;
-    background-color: grey;
-    width: 100%;
-    height: 450px;
-    overflow-x: scroll;
-    transform: translateX(10%);
+    overflow: hidden;
 }
 
-.slider{
+
+.hero-img{
     position: absolute;
     width: 100%;
-    height: 90%;
-}
-.hero-img1, .hero-img2, .hero-img3, .hero-img4{
-    width: 100%;
-    height: 400px;
+    height: 100%;
 
 }
 
-.c1 {
+
+.hero-img1 {
     transform: translateX(100%);
 }
 
-.c2 {
+.hero-img2 {
     transform: translateX(200%);
 }
 
-.c3 {
+.hero-img3 {
     transform: translateX(300%);
 }
+.hero-img4 {
+    transform: translateX(400%);
+}
 
+.hero-btn{
+    position: absolute;
+    z-index: 10;
+}
+
+.left-hero-btn{
+    width: 3%;
+    top: 40%; 
+    left: 2%
+}
+.right-hero-btn{
+    width: 3%;
+    top: 40%;
+    right: 2%;
+}
 
 /* ******************login and sign-up page**************** */
 #auth-page {
     background-image:url('./pexels-karolina-grabowska-5650043.jpg');
     width: 100vw;
-    height: 91.6vh;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -131,13 +141,21 @@ nav{
     background-color: rgb(231, 231, 231);
     color: grey;
 }
+
 .error{
     padding: 0.5em;
     width: 70%;
     border: 4px 4px;
-    border-color: red;
-    background-color: rgb(231, 231, 231);
+    background-color: rgb(231, 231, 231); 
     color: grey;
+    outline: none !important;
+    border:1px solid red;
+    box-shadow: 0 0 10px #719ECE;
+}
+.error:focus{
+    outline: none !important;
+    border:1px solid red;
+    box-shadow: 0 0 10px #719ECE;  
 }
 
 .fwd-bwd{

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import useAuthuser from "../hooks/useAuthuser"
 
 export default function LoginPage({login, response}){
@@ -8,9 +8,8 @@ export default function LoginPage({login, response}){
     // hook to check if user have an account
     const [isauth, setauth] = useAuthuser()
 
-    let showstatus = "hide"
     let showbtn = ""
-    let statusmessage = "fwd-bwd"
+    let statusmessage = ""
 
     async function login_user() {
         try {
@@ -20,12 +19,12 @@ export default function LoginPage({login, response}){
             // ajax function to get user data from server
             await login(null, 'GET', 200, 'http://localhost:80/user')
 
-            // Increasing the number of login attemt by 1
+            // Increasing the number of login attempt by 1
             setAttempt((prev)=>{
                 return prev + 1
             }) 
         } catch (error) {
-            // Increasing the number of login attemt by 1
+            // Increasing the number of login attempt by 1
             setAttempt((prev)=>{
                 return prev + 1
             }) 
@@ -45,15 +44,12 @@ export default function LoginPage({login, response}){
 
     if (isauth.status !== null && attempts > 0) {
         if (isauth.status === 200) {
-            showstatus = "status"
             statusmessage = isauth.message
             showbtn = "hide"
         }else if (isauth.status === 400) {
-            showstatus = "status"
             statusmessage = isauth.message
             showbtn = "fwd-bwd"
         }else if (isauth.status === 500) {
-            showstatus = "status"
             statusmessage = isauth.message
             showbtn = "fwd-bwd"
         }
@@ -81,7 +77,7 @@ export default function LoginPage({login, response}){
                     />
                 </div>
 
-                <div className={showstatus}>
+                <div className="status">
                     <p>{statusmessage}</p>
                 </div>
 
