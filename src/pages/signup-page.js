@@ -1,87 +1,69 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import useAuthuser from "../hooks/useAuthuser"
+import useAuthuser from "../hooks/useRequest"
 
 export default function SignupPage(){
-    // this state stores input field data
-    const [user, setuser] = useState({
+    const [userFields, setUserFields] = useState({
         email:"", firstname:"", middlename:"", lastname:"", password:"", conpassword: ""
     })
-    // This state check if password and pasword confirmation is correct, True it is a match and 
-    // false means it's not a match lastly null indicates password confirmation is empty
-    const [pass_match, set_pass_match] = useState(null)
-    // a custom hooks that sends request to the server to log users in
-    const [response, setresponse] = useAuthuser()
+    const [doesPasswordFieldAndConfirmPasswordMatch, setEqualityOfPasswordAndConfrimPasswordState] = useState(null)
+    const [response, authenticateUser] = useAuthuser()
     const redirect = useNavigate()
-    
-    // we use this variable to manipulate the styling of confirm password input field
-    let con_classname = "auth-inp"
-    // the variable is the classname of the sign-up button depending on the status of the response it is 
-    // either hidden shown
-    let showbtn = ""
-    // after user logs in we input the status of the response in this variable
-    let statusmessage = ""
+    let ConfirmPasswordFieldClassname = "auth-inp"
+    let signUpButtonClassname = ""
+    let responseMessage = ""
 
-    function updateuser(e) {
-        setuser((prev)=>{
+    function updateSignUpDetailsOnKeyStroke(inputField) {
+        setUserFields((prev)=>{
             return(
                 {
                     ...prev,
-                    [e.target.name]: e.target.value
+                    [inputField.target.name]: inputField.target.value
                 }
             )
         })
-
-        // validating password when confirm password input box is clicked  
-        if (e.target.name === "conpassword") {
-            if (e.target.value === user.password && user.password !== "") {
-                set_pass_match(true)
-            }else if (e.target.value === ""){
-                set_pass_match(null)
-            }else if (user.password === "" && e.target.value !== ""){
-                set_pass_match(false)
-                
-            }else if (user.password !== e.target.value ){
-                set_pass_match(false)
+         
+        if (inputField.target.name === "conpassword") {
+            if (inputField.target.value === userFields.password && userFields.password !== "") {
+                setEqualityOfPasswordAndConfrimPasswordState(true)
+            }else if (inputField.target.value === ""){
+                setEqualityOfPasswordAndConfrimPasswordState(null)
+            }else if (userFields.password === "" && inputField.target.value !== ""){
+                setEqualityOfPasswordAndConfrimPasswordState(false)   
+            }else if (userFields.password !== inputField.target.value ){
+                setEqualityOfPasswordAndConfrimPasswordState(false)
             }
         }
 
-        // validating password when password input box is clicked 
-        if (e.target.name === "password" && user.conpassword !== ""){
-            if (e.target.value === user.conpassword) {
-                set_pass_match(true)
-            }else if (e.target.value === ""){
-                set_pass_match(false)
-            }else if (e.target.value !== user.conpassword){
-                set_pass_match(false)
+        if (inputField.target.name === "password" && userFields.conpassword !== ""){
+            if (inputField.target.value === userFields.conpassword) {
+                setEqualityOfPasswordAndConfrimPasswordState(true)
+            }else if (inputField.target.value === ""){
+                setEqualityOfPasswordAndConfrimPasswordState(false)
+            }else if (inputField.target.value !== userFields.conpassword){
+                setEqualityOfPasswordAndConfrimPasswordState(false)
             }
         }
     }
-
+    
     if (response.status === null) {
-        statusmessage = ""
-        showbtn = "fwd-bwd"
+        responseMessage = ""
+        signUpButtonClassname = "fwd-bwd"
     }else if (response.status === 201) {
-        statusmessage = response.message
-        showbtn = "hide"
+        responseMessage = response.message
+        signUpButtonClassname = "hide"
         setTimeout(() => {
             redirect("/auth/login")
         }, 2000);
-    }else if (response.status === 409) {
-        statusmessage = response.message
-        showbtn = "fwd-bwd"
-    }else if (response.status === 500) {
-        statusmessage = response.message
-        showbtn = "fwd-bwd"
-    }
-
-
-    if (pass_match === true || pass_match === null) {
-        con_classname = "auth-inp"
-        console.log(pass_match)
     }else{
-        con_classname = "error"
-        console.log(pass_match)
+        responseMessage = response.message
+        signUpButtonClassname = "fwd-bwd"
+    }
+    
+    if (doesPasswordFieldAndConfirmPasswordMatch === true || doesPasswordFieldAndConfirmPasswordMatch === null) {
+        ConfirmPasswordFieldClassname = "auth-inp"
+    }else if(doesPasswordFieldAndConfirmPasswordMatch === false){
+        ConfirmPasswordFieldClassname = "error"
     }
 
     
@@ -94,53 +76,53 @@ export default function SignupPage(){
                     <input
                         type="email"
                         placeholder="email"
-                        onChange={updateuser}
+                        onChange={updateSignUpDetailsOnKeyStroke}
                         name="email"
                         className="auth-inp"
                     />
                      <input
                         type="firstname"
                         placeholder="firstname"
-                        onChange={updateuser}
+                        onChange={updateSignUpDetailsOnKeyStroke}
                         name="firstname"
                         className="auth-inp"
                     />
                     <input
                         type="middlename"
                         placeholder="middlename"
-                        onChange={updateuser}
+                        onChange={updateSignUpDetailsOnKeyStroke}
                         name="middlename"
                         className="auth-inp"
                     />
                     <input
                         type="lastname"
                         placeholder="lastname"
-                        onChange={updateuser}
+                        onChange={updateSignUpDetailsOnKeyStroke}
                         name="lastname"
                         className="auth-inp"
                     />
                     <input
                         type="password"
                         placeholder="password"
-                        onChange={updateuser}
+                        onChange={updateSignUpDetailsOnKeyStroke}
                         name="password"
                         className="auth-inp"
                     />
                     <input
                         type="password"
                         placeholder="confirm password"
-                        onChange={updateuser}
+                        onChange={updateSignUpDetailsOnKeyStroke}
                         name="conpassword"
-                        className={con_classname}
+                        className={ConfirmPasswordFieldClassname}
                     />
                 </div>
                 <div>
-                    <p>{statusmessage}</p>
+                    <p>{responseMessage}</p>
                 </div>
 
-                <div className={showbtn}>
+                <div className={signUpButtonClassname}>
                     <button className="auth-bwd-btn">Back</button>
-                    <button className="auth-fwd-btn" onClick={()=>{setresponse(user, 'POST', 201, 'http://localhost:80/sign-up')}}>Create</button>
+                    <button className="auth-fwd-btn" onClick={()=>{authenticateUser(userFields, 'POST', 201, 'http://localhost:80/sign-up')}}>Create</button>
                 </div>
             </div>
         </section>

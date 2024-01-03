@@ -1,38 +1,27 @@
-import React, { useState } from "react"
-import useAuthuser from "../hooks/useAuthuser"
+import React, { useRef, useState } from "react"
+import useRequest from "../hooks/useRequest"
 
-export default function LoginPage({login, response}){
-    const [user, setuser] = useState({email:"", password:""})
-    const [attempts, setAttempt] = useState(0)
+export default function LoginPage({getUserData}){
+    const [userFields, setUserFields] = useState({email:"", password:""})
+    const loginAttempts = useRef(0)
+    const [response, authenticateUser] = useRequest()
+    let LoginButtonClassName = ""
+    let responseMessage = ""
 
-    // hook to check if user have an account
-    const [isauth, setauth] = useAuthuser()
-
-    let showbtn = ""
-    let statusmessage = ""
-
-    async function login_user() {
+    async function loginUser() {
         try {
-            //ajax function to log the user in
-            await setauth(user, 'POST', 200, 'http://localhost:80/log-in');
-
-            // ajax function to get user data from server
-            await login(null, 'GET', 200, 'http://localhost:80/user')
-
-            // Increasing the number of login attempt by 1
-            setAttempt((prev)=>{
-                return prev + 1
-            }) 
+            await authenticateUser(userFields, 'POST', 200, 'http://localhost:80/log-in');
+            console.log('yooo');
+            await getUserData(null, 'GET', 200, 'http://localhost:80/user')
+            loginAttempts.current = loginAttempts.current + 1
         } catch (error) {
-            // Increasing the number of login attempt by 1
-            setAttempt((prev)=>{
-                return prev + 1
-            }) 
+            console.log(error);
+            loginAttempts.current = loginAttempts.current + 1
         }   
     }
     
-    function updateuser(e) {
-        setuser((prev)=>{
+    function updateLoginDetailsOnKeyStroke(e) {
+        setUserFields((prev)=>{
             return(
                 {
                     ...prev,
@@ -42,16 +31,16 @@ export default function LoginPage({login, response}){
         })
     }
 
-    if (isauth.status !== null && attempts > 0) {
-        if (isauth.status === 200) {
-            statusmessage = isauth.message
-            showbtn = "hide"
-        }else if (isauth.status === 400) {
-            statusmessage = isauth.message
-            showbtn = "fwd-bwd"
-        }else if (isauth.status === 500) {
-            statusmessage = isauth.message
-            showbtn = "fwd-bwd"
+    if (response.status !== null && loginAttempts > 0) {
+        if (response.status === 200) {
+            responseMessage = response.message
+            LoginButtonClassName = "hide"
+        }else if (response.status === 400) {
+            responseMessage = response.message
+            LoginButtonClassName = "fwd-bwd"
+        }else if (response.status === 500) {
+            responseMessage = response.message
+            LoginButtonClassName = "fwd-bwd"
         }
     }
 
@@ -64,26 +53,26 @@ export default function LoginPage({login, response}){
                     <input
                         type="email"
                         placeholder="email"
-                        onChange={updateuser}
+                        onChange={updateLoginDetailsOnKeyStroke}
                         name="email"
                         className="auth-inp"
                     />
                     <input
                         type="password"
                         placeholder="password"
-                        onChange={updateuser}
+                        onChange={updateLoginDetailsOnKeyStroke}
                         name="password"
                         className="auth-inp"
                     />
                 </div>
 
                 <div className="status">
-                    <p>{statusmessage}</p>
+                    <p>{responseMessage}</p>
                 </div>
 
-                <div className={showbtn}>
+                <div className={LoginButtonClassName}>
                     <button className="auth-bwd-btn">Back</button>
-                    <button className="auth-fwd-btn" onClick={()=>{login_user()}}>Login</button>
+                    <button className="auth-fwd-btn" onClick={()=>{loginUser()}}>Login</button>
                 </div>
             </div>
         </section>

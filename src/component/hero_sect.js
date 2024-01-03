@@ -9,77 +9,87 @@ import { useEffect, useRef, useState } from "react"
 
 
 export default function Hero() {
-    const [slide_state, set_slideState] = useState(-100)
-    const animation_frame = useRef('0.2s')
-    const auto_move_slide = useRef()
-    const move_btn = useRef(true)
+    const [carouselPosition, setCarouselPosition] = useState(-100)
+    const animationFrame = useRef('0.2s')
+    const moveSlideToTheRightAutomatically = useRef()
+    const isButtonEnabled = useRef(true)
 
 
     let tracker_style = {
         position: 'relative',
         width: '100%',
         height: '100%',
-        transform: `translateX(${slide_state}%)`,
-        transition: `linear  ${animation_frame.current}`
+        transform: `translateX(${carouselPosition}%)`,
+        transition: `linear  ${animationFrame.current}`
       };
    
       function move_slide_right() {
-        if (move_btn.current === true) {
-            move_btn.current = false
-            if (slide_state === -300) {
-                setTimeout(() => {
-                    animation_frame.current = '0s'
-                    set_slideState(-100)
-                    setTimeout(()=>{
-                        move_btn.current = true
-                    }, 400)
-                }, 250);
-            }
-            animation_frame.current = '0.2s'
-            set_slideState(prev => prev + -100)
-            
-            if (slide_state !== -300){
-                setTimeout(()=>{
-                    move_btn.current = true
-                }, 400)
-            }
-             
+        if (isButtonEnabled.current === true) {
+            isButtonEnabled.current = false
+            setCarouselPositionToStartPostionIfCarouselEndIsReached()
+            animationFrame.current = '0.2s'
+            setCarouselPosition(prev => prev + -100)
+            enableButtonWhenCarouselIsNotOnTheLastSlide()
+        }
+      }
+
+    function setCarouselPositionToStartPostionIfCarouselEndIsReached() {
+        if (carouselPosition === -300) {
+            setTimeout(() => {
+                animationFrame.current = '0s'
+                setCarouselPosition(-100)
+                enableButtonWhenCarouselIsOnTheLastSlide()
+            }, 250);
+        }
+    }
+
+      function enableButtonWhenCarouselIsOnTheLastSlide(){
+        setTimeout(()=>{
+            isButtonEnabled.current = true
+        }, 400)
+      }
+
+      function enableButtonWhenCarouselIsNotOnTheLastSlide() {
+        if (carouselPosition !== -300){
+            setTimeout(()=>{
+                isButtonEnabled.current = true
+            }, 400)
         }
       }
 
       function move_slide_left() {
-        if (move_btn.current === true) {
-                move_btn.current = false
-            if (slide_state === -100) {
+        if (isButtonEnabled.current === true) {
+                isButtonEnabled.current = false
+            if (carouselPosition === -100) {
                 setTimeout(() => {
-                    animation_frame.current = '0s'
-                    set_slideState(-300)
+                    animationFrame.current = '0s'
+                    setCarouselPosition(-300)
                     setTimeout(()=>{
-                        move_btn.current = true
+                        isButtonEnabled.current = true
                     }, 400)
                 }, 250);
             }
-            animation_frame.current = '0.2s'
-            set_slideState(prev => prev + 100)
-            if (slide_state !== -100){
+            animationFrame.current = '0.2s'
+            setCarouselPosition(prev => prev + 100)
+            if (carouselPosition !== -100){
                 setTimeout(()=>{
-                    move_btn.current = true
+                    isButtonEnabled.current = true
                 }, 400)
             }
         }
       }
      
    useEffect(()=>{
-    clearTimeout(auto_move_slide.current)
-    auto_move_slide.current = setTimeout(()=>{
-        if (slide_state === -300) {
+    clearTimeout(moveSlideToTheRightAutomatically.current)
+    moveSlideToTheRightAutomatically.current = setTimeout(()=>{
+        if (carouselPosition === -300) {
             setTimeout(() => {
-                animation_frame.current = '0s'
-                set_slideState(-100)
+                animationFrame.current = '0s'
+                setCarouselPosition(-100)
             }, 250);
         }
-        animation_frame.current = '0.2s'
-        set_slideState(prev => prev + -100)
+        animationFrame.current = '0.2s'
+        setCarouselPosition(prev => prev + -100)
     }, 15000)
    })   
 

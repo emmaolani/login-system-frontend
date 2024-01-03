@@ -5,33 +5,58 @@ import AuthPage from "./pages/authorization";
 import LoginPage from "./pages/login-page";
 import SignupPage from "./pages/signup-page";
 import ProtectedRoutes from "./util/ProtectedRoutes";
-import useAuthuser from "./hooks/useAuthuser";
+import useRequest from "./hooks/useRequest";
 import RegularRoutes from "./util/RegularRoutes";
-import RestrictAuthRoutes from "./util/RestrictAuthRoutes";
+import AuthRoutes from "./util/AuthRoutes";
+import io from "socket.io-client";
+import useCreateOrderProcessingSocket from "./hooks/useOrderProcessingSocket";
 
 
 export default function App(){
-    const [response, setresponse] = useAuthuser()
-    const redirect_url = useRef('/')
+    const [user, getUser] = useRequest()
+    const redirectUrl = useRef('/')
+    const order = useRef(null)
+    const [createOrder, disconnectOrder] = useCreateOrderProcessingSocket(order)
+
     useEffect(()=>{
-        setresponse(null, 'GET', 200, 'http://localhost:80/user')
+        getUser(null, 'GET', 200, 'http://localhost:80/user')
     }, [])
- 
-    console.log(response);
+
+
     return( 
         <>
             <Routes>
-                <Route element={<RegularRoutes redirect_url={redirect_url}/>}>
+                <Route element={
+                    <RegularRoutes 
+                        user={user}
+                        redirectUrl={redirectUrl} 
+                        orderProcessingWebSocket={disconnectOrder}
+                        order={order} 
+                    />
+                }>
                     <Route path="/" element={<LandingPage/>}/>
                 </Route>
 
-                <Route element={<ProtectedRoutes isAuth={response.status} redirect_url={redirect_url}/>}>
+                <Route element={
+                    <ProtectedRoutes 
+                        user={user} 
+                        redirectUrl={redirectUrl} 
+                        orderProcessingWebSocket={disconnectOrder} 
+                    />
+                }>
                 </Route> 
-                <Route element={<RestrictAuthRoutes isAuth={response.status} redirect_url={redirect_url}/>}>
+
+                <Route element={
+                    <AuthRoutes 
+                        user={user} 
+                        redirectUrl={redirectUrl} 
+                        orderProcessingWebSocket={disconnectOrder} 
+                    />
+                }>
                     <Route path="/auth">
-                        <Route index element={<AuthPage/>}/>
+                        <Route index element={<AuthPage  orderProcessingWebSocket={createOrder} order={order} />}/>
                         <Route path="signup" element={ <SignupPage/> } />
-                        <Route path="login" element={<LoginPage login={setresponse} response={response}/>}/>
+                        <Route path="login" element={<LoginPage getUser={getUser}/>}/>
                     </Route>
                 </Route>
             </Routes>

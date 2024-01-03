@@ -1,6 +1,6 @@
 
 
-export async function useConnectServer(user, url, status, method) {
+export async function useConnectToServer(user, url, status, method) {
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open(method, url, true)

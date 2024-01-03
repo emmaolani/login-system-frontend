@@ -1,9 +1,10 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-export default function ProtectedRoutes({isAuth, redirect_url}) {
-    if (isAuth === 400) {
-        redirect_url.current = window.location.pathname
+export default function ProtectedRoutes({user, redirectUrl, orderProcessingWebSocket}) {
+    if (user.loginStatus === 400) {
+        redirectUrl.current = window.location.pathname
     }
-    return(isAuth === 200 ? <Outlet/> : isAuth === null ? <h1>Loading</h1> : <Navigate to={'auth/login'}/>)
+    orderProcessingWebSocket()
+    return(user.loginStatus === 200 ? <Outlet/> : user.loginStatus === null ? <h1>Loading</h1> : <Navigate to={'auth/login'}/>)
 }

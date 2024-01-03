@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useRef } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-export default function AuthPage() {
+export default function AuthPage({orderProcessingWebSocket, order}) {
     const navigate = useNavigate()
+    const redirect = useNavigate()  
+    orderProcessingWebSocket()
+    
+    order.current.on('orderPlaced', (data)=>{
+        console.log(data);
+    })
+
+    function emitdata() {
+        order.current.emit('send_message', {message: 'hello world'})
+    }
 
     function goto_page(page) {
         navigate(page)
@@ -22,6 +32,9 @@ export default function AuthPage() {
                 <div className="auth-desc" onClick={ () => {goto_page("/auth/signup")} }>
                     <p>create new account</p>
                 </div>
+                <button onClick={emitdata}>
+                    click
+                </button>
                 
             </div>
         </section>
